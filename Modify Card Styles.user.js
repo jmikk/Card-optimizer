@@ -1,17 +1,15 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      4.9.1
+// @version      5
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
-// @author       YourName
+// @author       9003
 // @match        *://www.nationstates.net/page=deck*
 // @grant        none
 // ==/UserScript==
 
 
-//BUG: oops 9003 mode is on everytime you open the settings
-
-
+//TODO: Live change with each button press
 (function () {
     'use strict';
 
@@ -292,7 +290,7 @@
         if (document.querySelector('.style-popup')) return;
 
         const currentSettings = loadSettings(cardID) || {};
-        const globalOops9003 = loadGlobalSettings('oops9003') || {};
+        const globalOops9003 = loadGlobalSettings('oops9003');
 
 
         const popup = document.createElement('div');
