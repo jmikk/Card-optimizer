@@ -1,16 +1,15 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      8
+// @version      9
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
 // @grant        none
 // ==/UserScript==
 
-//TODO
-//Export all settings
-//import settings
+// Last added:
+//Real_badge mode
 
 (function () {
     'use strict';
@@ -49,7 +48,7 @@
                 alert('Settings imported successfully!');
                 location.reload();
             } catch (error) {
-                alert('Failed to import settings. Make sure the file is valid.');
+                alert(error);
             }
         };
         reader.readAsText(file);
@@ -94,6 +93,8 @@
         const cardID = cardElement.getAttribute('data-cardid');
         const season = cardElement.getAttribute('data-season');
         const oops9003Enabled = loadGlobalSettings('oops9003'); // Check global setting
+        const realBadgeEnabled = loadGlobalSettings('realBadge'); // Check global setting
+
 
         if (!cardID || season !== '4') return; // Skip if not Season 4
 
@@ -178,6 +179,23 @@
                 // Remove overlay if global mode is disabled
                 const oops9003Overlay = cardElement.querySelector('.oops9003-overlay');
                 if (oops9003Overlay) oops9003Overlay.remove();
+            }
+
+            if (!realBadgeEnabled)
+            {
+             const MAX_RESOLUTION_NUMBER = 440; // Change this to the maximum Security Council Resolution number for which the image should be changed
+
+             const imageElement = document.querySelector('.wabadge .scbadge');
+             const title = imageElement.getAttribute('title');
+             const resolutionNumber = parseInt(title.match(/Security Council Resolution # (\d+)/)[1]);
+
+             if (resolutionNumber <= MAX_RESOLUTION_NUMBER) {
+                 if (title.includes('Condemned')) {
+                     imageElement.setAttribute('src', 'https://i.imgur.com/rCdUOAi.png');
+                 } else if (title.includes('Commended')) {
+                     imageElement.setAttribute('src', 'https://i.imgur.com/yPHKM5g.png');
+                 }
+             }
             }
 
             if (settings && settings.foilMode) {
@@ -285,11 +303,12 @@
 
             if (pretitleElement && rarityElement && topElement) {
                 if (!topElement.querySelector('.full-art-title')) {
+                    if (settings.textSize > 1) { settings.textSize = 1;}
                     const pretitleText = pretitleElement.textContent.trim();
                     const pretitleDisplay = document.createElement('div');
                     pretitleDisplay.textContent = pretitleText;
                     pretitleDisplay.style.color = settings && settings.nameColor || '#fff';
-                    pretitleDisplay.style.fontSize = '0.5rem';
+                    pretitleDisplay.style.fontSize = `${settings.textSize}rem`;
                     pretitleDisplay.style.textAlign = 'center';
                     pretitleDisplay.style.whiteSpace = 'normal';
 
@@ -297,7 +316,7 @@
                     const nameDisplay = document.createElement('div');
                     nameDisplay.textContent = nameText;
                     nameDisplay.style.color = settings && settings.nameColor || '#fff';
-                    nameDisplay.style.fontSize = '.5rem';
+                    nameDisplay.style.fontSize = `${settings.textSize}rem`;
                     nameDisplay.style.textAlign = 'center';
                     nameDisplay.style.whiteSpace = 'normal';
                     nameDisplay.style.lineHeight = '1';
@@ -336,7 +355,9 @@
 
     function processAllCards() {
         const oops9003Enabled = loadGlobalSettings('oops9003');
+        const realBadeEnabled = loadGlobalSettings('realBadge');
         const cardElements = document.querySelectorAll('.deckcard');
+
         cardElements.forEach(cardElement => {
             applySettingsToCard(cardElement);
         });
@@ -367,6 +388,8 @@
 
         const currentSettings = loadSettings(cardID) || {};
         const globalOops9003 = loadGlobalSettings('oops9003');
+        const globalRealBadge = loadGlobalSettings('realBadge');
+
 
 
         const popup = document.createElement('div');
@@ -385,6 +408,9 @@
         popup.innerHTML = `
         <label style="display:block; margin-top:10px;">
             <input type="checkbox" id="oops-9003-global" ${globalOops9003 ? 'checked' : ''}>Oops All 9003 (Global)
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="real-badge" ${globalRealBadge ? 'checked' : "True"}>Turn on for the new badges on all cards, effects card that got the C&C before the change only (changes old C&Cs Global)
         </label>
         <label style="display:block; margin-top:10px;">
             <input type="checkbox" id="toggle-motto-box" ${currentSettings.hideMottoBox2 ? 'checked' : ''}>Remove Motto Box
@@ -410,6 +436,10 @@
         <label style="display:block; margin-top:10px;">
             Motto Color (Hex):
             <input type="text" id="text-color" value="${currentSettings.textColor || ''}" placeholder="#000000" style="width:100px;">
+        </label>
+        <label style="display:block; margin-top:10px;">
+            Top banner size (Hex):
+            <input type="text" id="text-size" value="${currentSettings.textSize || ''}" placeholder=".5" style="width:100px;">
         </label>
         <label style="display:block; margin-top:10px;">
             Name Color (Hex):
@@ -451,14 +481,17 @@
         <button id="import-settings" style="margin-top:20px; margin-left:10px;">Import Settings</button>
         <input type="file" id="import-file" style="display: none;" accept="application/json">
 `;
-    
 
         document.body.appendChild(popup);
 
         document.getElementById('apply-settings').addEventListener('click', () => {
 
             const globalOops9003Value = document.getElementById('oops-9003-global').checked;
+            const globalRealBadgeValue = document.getElementById('real-badge').checked;
+
             saveGlobalSettings('oops9003', globalOops9003Value);
+            saveGlobalSettings('realBadge', globalRealBadgeValue);
+
 
             const newSettings = {
                 removeGradient: document.getElementById('toggle-gradient').checked,
@@ -475,6 +508,9 @@
                 hideBigBadge: document.getElementById('toggle-big-badge').checked,
                 hideTrophy: document.getElementById('toggle-trophys').checked,
                 hideLowerInfo: document.getElementById('toggle-lower-info').checked,
+                textSize: document.getElementById('text-size').value,
+
+
 
 
 
@@ -523,7 +559,7 @@
                     alert('Settings imported successfully!');
                     location.reload(); // Reload only after successfully saving
                 } catch (error) {
-                    alert('Failed to import settings. Make sure the file is valid.');
+                    alert(error);
                 }
             };
             reader.readAsText(file);
