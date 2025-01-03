@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      7.1
+// @version      8
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
@@ -9,7 +9,7 @@
 // ==/UserScript==
 
 //TODO
-
+//Export all settings
 //import settings
 
 (function () {
@@ -504,8 +504,33 @@
         document.getElementById('export-settings').addEventListener('click', () => {
             exportSettings()
         });
+
+
+        document.getElementById('import-file').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedSettings = JSON.parse(e.target.result);
+                    if (importedSettings.cardStyles) {
+                        localStorage.setItem('cardStyles', JSON.stringify(importedSettings.cardStyles));
+                    }
+                    if (importedSettings.globalSettings) {
+                        localStorage.setItem('globalSettings', JSON.stringify(importedSettings.globalSettings));
+                    }
+                    alert('Settings imported successfully!');
+                    location.reload(); // Reload only after successfully saving
+                } catch (error) {
+                    alert('Failed to import settings. Make sure the file is valid.');
+                }
+            };
+            reader.readAsText(file);
+        });
+
         document.getElementById('import-settings').addEventListener('click', () => {
-            importSettings()
+            document.getElementById('import-file').click();
         });
   }
 
