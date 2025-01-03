@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      7
+// @version      7.1
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
@@ -9,11 +9,52 @@
 // ==/UserScript==
 
 //TODO
-//Export all settings 
+
 //import settings
 
 (function () {
     'use strict';
+
+        // Export all settings to a file
+    function exportSettings() {
+        const allSettings = JSON.parse(localStorage.getItem('cardStyles') || '{}');
+        const globalSettings = JSON.parse(localStorage.getItem('globalSettings') || '{}');
+        const combinedSettings = { cardStyles: allSettings, globalSettings: globalSettings };
+
+        const blob = new Blob([JSON.stringify(combinedSettings, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'card_styles_settings.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // Import settings from a file
+    function importSettings(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const importedSettings = JSON.parse(e.target.result);
+                if (importedSettings.cardStyles) {
+                    localStorage.setItem('cardStyles', JSON.stringify(importedSettings.cardStyles));
+                }
+                if (importedSettings.globalSettings) {
+                    localStorage.setItem('globalSettings', JSON.stringify(importedSettings.globalSettings));
+                }
+                alert('Settings imported successfully!');
+                location.reload();
+            } catch (error) {
+                alert('Failed to import settings. Make sure the file is valid.');
+            }
+        };
+        reader.readAsText(file);
+    }
+
 
     // Utility to save settings
     function saveSettings(cardID, settings) {
@@ -406,7 +447,11 @@
         <button id="apply-settings" style="margin-top:20px;">Apply</button>
         <button id="reset-settings" style="margin-top:20px; margin-left:10px;">Reset</button>
         <button id="close-popup" style="margin-top:20px; margin-left:10px;">Close</button>
-    `;
+        <button id="export-settings" style="margin-top:20px; margin-left:10px;">Export Settings</button>
+        <button id="import-settings" style="margin-top:20px; margin-left:10px;">Import Settings</button>
+        <input type="file" id="import-file" style="display: none;" accept="application/json">
+`;
+    
 
         document.body.appendChild(popup);
 
@@ -453,7 +498,16 @@
         document.getElementById('close-popup').addEventListener('click', () => {
             document.body.removeChild(popup);
         });
-    }
+        //
+
+
+        document.getElementById('export-settings').addEventListener('click', () => {
+            exportSettings()
+        });
+        document.getElementById('import-settings').addEventListener('click', () => {
+            importSettings()
+        });
+  }
 
 
     function initialize() {
