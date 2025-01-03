@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      6
+// @version      7
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
 // @grant        none
 // ==/UserScript==
 
-//TODO: 
-//And offsets
+//TODO
+//Export all settings 
+//import settings
 
 (function () {
     'use strict';
@@ -349,9 +350,6 @@
         </label>
         <label style="display:block; margin-top:10px;">
             <input type="checkbox" id="toggle-pretitle" ${currentSettings.pretitle ? 'checked' : ''}>Remove pretitle Box
-        </label>
-        <label style="display:block; margin-top:10px;">
-            <input type="number" id="pretitle-offset" placeholder="0" style="width:100px;" value="${currentSettings.pretitleOffset || 0}">
         </label>
         <label style="display:block; margin-top:10px;">
             <input type="checkbox" id="toggle-nation-name" ${currentSettings.hideName ? 'checked' : ''}>Remove name Box
