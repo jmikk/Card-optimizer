@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      5
+// @version      6
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
 // @grant        none
 // ==/UserScript==
 
-//TODO: Add badge toggles,
+//TODO: 
 //And offsets
 
 (function () {
@@ -200,6 +200,39 @@
                 });
             }
         }
+        if (settings && settings.hideMottoBox2) {
+            const mottoBox = cardElement.querySelector('.motto-box');
+                mottoBox.style.display = 'none';
+        }
+        //
+        if (settings && settings.hideTrophy) {
+            const badges = cardElement.querySelectorAll('.trophy');
+            badges.forEach(badge => {
+                badge.style.display = 'none';
+            });
+        }
+
+
+        if (settings && settings.hideName) {
+            const mottoBox = cardElement.querySelector('.title');
+                mottoBox.style.display = 'none';
+        }
+        if (settings && settings.hideLowerInfo) {
+            const mottoBox = cardElement.querySelector('.lower-info');
+                mottoBox.style.display = 'none';
+        }
+
+        if (settings && settings.hideBigBadge) {
+            const badges = cardElement.querySelectorAll('.badge');
+            badges.forEach(badge => {
+                badge.style.display = 'none';
+            });
+        }
+
+
+        if (settings && settings.pretitle) {
+            const mottoBox = cardElement.querySelector('.pretitle');
+                mottoBox.style.display = 'none';}
 
         if (settings && settings.fullArtMode) {
             const pretitleElement = cardElement.querySelector('.pretitle');
@@ -311,8 +344,29 @@
         <label style="display:block; margin-top:10px;">
             <input type="checkbox" id="oops-9003-global" ${globalOops9003 ? 'checked' : ''}>Oops All 9003 (Global)
         </label>
-        <label>
-            <input type="checkbox" id="toggle-gradient" ${currentSettings.removeGradient ? 'checked' : ''}> Remove Linear Gradient
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-motto-box" ${currentSettings.hideMottoBox2 ? 'checked' : ''}>Remove Motto Box
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-pretitle" ${currentSettings.pretitle ? 'checked' : ''}>Remove pretitle Box
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="number" id="pretitle-offset" placeholder="0" style="width:100px;" value="${currentSettings.pretitleOffset || 0}">
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-nation-name" ${currentSettings.hideName ? 'checked' : ''}>Remove name Box
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-big-badge" ${currentSettings.hideBigBadge ? 'checked' : ''}>Remove Big badges (WA,Admin,WAD)
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-trophys" ${currentSettings.hideTrophy ? 'checked' : ''}>Remove Trophys
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-lower-info" ${currentSettings.hideLowerInfo ? 'checked' : ''}>Remove Lower info bar
+        </label>
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="toggle-gradient" ${currentSettings.removeGradient ? 'checked' : ''}>Remove Linear Gradient
         </label>
         <label style="display:block; margin-top:10px;">
             Motto Color (Hex):
@@ -371,7 +425,16 @@
                 fullArtMode: document.getElementById('full-art-mode').checked,
                 foilMode: document.getElementById('foil-mode').checked,
                 foilStyle: document.getElementById('foil-style').value,
-                nameColor: document.getElementById('name-color').value
+                nameColor: document.getElementById('name-color').value,
+                hideMottoBox2: document.getElementById('toggle-motto-box').checked,
+                pretitle: document.getElementById('toggle-pretitle').checked,
+                hideName: document.getElementById('toggle-nation-name').checked,
+                hideBigBadge: document.getElementById('toggle-big-badge').checked,
+                hideTrophy: document.getElementById('toggle-trophys').checked,
+                hideLowerInfo: document.getElementById('toggle-lower-info').checked,
+
+
+
             };
 
             saveSettings(cardID, newSettings);
