@@ -8,8 +8,9 @@
 // @grant        none
 // ==/UserScript==
 
+//TODO: Add badge toggles,
+//And offsets
 
-//TODO: Live change with each button press
 (function () {
     'use strict';
 
@@ -374,14 +375,18 @@
             };
 
             saveSettings(cardID, newSettings);
-            applySettingsToCard(cardElement);
+            //applySettingsToCard(cardElement);
             document.body.removeChild(popup);
+            location.reload();
+
         });
 
         document.getElementById('reset-settings').addEventListener('click', () => {
             resetSettings(cardID);
             applySettingsToCard(cardElement);
             document.body.removeChild(popup);
+            location.reload();
+
         });
 
         document.getElementById('close-popup').addEventListener('click', () => {
