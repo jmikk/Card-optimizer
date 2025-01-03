@@ -1,12 +1,16 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      4.9
+// @version      4.9.1
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
-// @author       9003
-// @match        *://*.nationstates.net/page=deck*
+// @author       YourName
+// @match        *://www.nationstates.net/page=deck*
 // @grant        none
 // ==/UserScript==
+
+
+//BUG: oops 9003 mode is on everytime you open the settings
+
 
 (function () {
     'use strict';
@@ -16,6 +20,19 @@
         const allSettings = JSON.parse(localStorage.getItem('cardStyles') || '{}');
         allSettings[cardID] = settings;
         localStorage.setItem('cardStyles', JSON.stringify(allSettings));
+    }
+
+        // Utility to save global settings
+    function saveGlobalSettings(key, value) {
+        const globalSettings = JSON.parse(localStorage.getItem('globalSettings') || '{}');
+        globalSettings[key] = value;
+        localStorage.setItem('globalSettings', JSON.stringify(globalSettings));
+    }
+
+        // Utility to load global settings
+    function loadGlobalSettings(key) {
+        const globalSettings = JSON.parse(localStorage.getItem('globalSettings') || '{}');
+        return globalSettings[key] || false;
     }
 
     // Utility to load settings
@@ -35,6 +52,8 @@
     function applySettingsToCard(cardElement) {
         const cardID = cardElement.getAttribute('data-cardid');
         const season = cardElement.getAttribute('data-season');
+        const oops9003Enabled = loadGlobalSettings('oops9003'); // Check global setting
+
         if (!cardID || season !== '4') return; // Skip if not Season 4
 
         const settings = loadSettings(cardID);
@@ -90,6 +109,34 @@
                         flagElement.style.backgroundImage = urlMatch[0];
                     }
                 }
+            }
+
+            if (oops9003Enabled) {
+              let oops9003Overlay = cardElement.querySelector('.oops9003-overlay');
+               if (!oops9003Overlay) {
+                    oops9003Overlay = document.createElement('div');
+                    oops9003Overlay.classList.add('oops9003-overlay');
+                    oops9003Overlay.style.position = 'absolute';
+                    oops9003Overlay.style.top = '0';
+                    oops9003Overlay.style.left = '0';
+                    oops9003Overlay.style.width = '100%';
+                    oops9003Overlay.style.height = '100%';
+                    oops9003Overlay.style.pointerEvents = 'none';
+                    oops9003Overlay.style.backgroundSize = 'cover';
+                    oops9003Overlay.style.backgroundBlendMode = 'screen';
+                    oops9003Overlay.style.opacity = '.99'; // Adjust transparency if needed
+                    oops9003Overlay.style.zIndex = '1'; // Ensure it appears above the card and buttons
+                    cardElement.style.position = 'relative';
+
+                    cardElement.appendChild(oops9003Overlay);
+                }
+                    oops9003Overlay.style.backgroundImage = 'url(https://i.imgur.com/Rqb6PuY.png)';
+
+
+            } else {
+                // Remove overlay if global mode is disabled
+                const oops9003Overlay = cardElement.querySelector('.oops9003-overlay');
+                if (oops9003Overlay) oops9003Overlay.remove();
             }
 
             if (settings && settings.foilMode) {
@@ -214,6 +261,7 @@
     }
 
     function processAllCards() {
+        const oops9003Enabled = loadGlobalSettings('oops9003');
         const cardElements = document.querySelectorAll('.deckcard');
         cardElements.forEach(cardElement => {
             applySettingsToCard(cardElement);
@@ -244,6 +292,8 @@
         if (document.querySelector('.style-popup')) return;
 
         const currentSettings = loadSettings(cardID) || {};
+        const globalOops9003 = loadGlobalSettings('oops9003') || {};
+
 
         const popup = document.createElement('div');
         popup.classList.add('style-popup');
@@ -259,6 +309,9 @@
         popup.style.zIndex = '10000';
 
         popup.innerHTML = `
+        <label style="display:block; margin-top:10px;">
+            <input type="checkbox" id="oops-9003-global" ${globalOops9003 ? 'checked' : ''}>Oops All 9003 (Global)
+        </label>
         <label>
             <input type="checkbox" id="toggle-gradient" ${currentSettings.removeGradient ? 'checked' : ''}> Remove Linear Gradient
         </label>
@@ -307,6 +360,10 @@
         document.body.appendChild(popup);
 
         document.getElementById('apply-settings').addEventListener('click', () => {
+
+            const globalOops9003Value = document.getElementById('oops-9003-global').checked;
+            saveGlobalSettings('oops9003', globalOops9003Value);
+
             const newSettings = {
                 removeGradient: document.getElementById('toggle-gradient').checked,
                 textColor: document.getElementById('text-color').value,
@@ -338,6 +395,13 @@
     function initialize() {
         processAllCards();
         addStyleButtons();
+
+
+        const infoContentElements = document.querySelectorAll('.deckcard-info-content');
+        infoContentElements.forEach(element => {
+        element.style.position = 'relative'; // Ensure position is set for z-index to work
+        element.style.zIndex = '100'; // Set the z-index to 100
+    });
     }
 
     initialize();
