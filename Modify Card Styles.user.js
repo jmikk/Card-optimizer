@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      9
+// @version      10
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
@@ -181,22 +181,28 @@
                 if (oops9003Overlay) oops9003Overlay.remove();
             }
 
-            if (!realBadgeEnabled)
-            {
-             const MAX_RESOLUTION_NUMBER = 440; // Change this to the maximum Security Council Resolution number for which the image should be changed
+            if (!realBadgeEnabled) {
+                const MAX_RESOLUTION_NUMBER = 440; // Maximum resolution number to process
+                const imageElement = document.querySelector('.wabadge .scbadge');
 
-             const imageElement = document.querySelector('.wabadge .scbadge');
-             const title = imageElement.getAttribute('title');
-             const resolutionNumber = parseInt(title.match(/Security Council Resolution # (\d+)/)[1]);
-
-             if (resolutionNumber <= MAX_RESOLUTION_NUMBER) {
-                 if (title.includes('Condemned')) {
-                     imageElement.setAttribute('src', 'https://i.imgur.com/rCdUOAi.png');
-                 } else if (title.includes('Commended')) {
-                     imageElement.setAttribute('src', 'https://i.imgur.com/yPHKM5g.png');
-                 }
-             }
+                if (imageElement) {
+                    const title = imageElement.getAttribute('title');
+                    if (title) {
+                        const match = title.match(/Security Council Resolution # (\d+)/);
+                        if (match && match[1]) {
+                            const resolutionNumber = parseInt(match[1], 10);
+                            if (resolutionNumber <= MAX_RESOLUTION_NUMBER) {
+                                if (title.includes('Condemned')) {
+                                    imageElement.setAttribute('src', 'https://i.imgur.com/rCdUOAi.png');
+                                } else if (title.includes('Commended')) {
+                                    imageElement.setAttribute('src', 'https://i.imgur.com/yPHKM5g.png');
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
 
             if (settings && settings.foilMode) {
                 let foilOverlay = cardElement.querySelector('.foil-overlay');
