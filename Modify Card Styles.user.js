@@ -422,19 +422,19 @@
             <input type="checkbox" id="toggle-motto-box" ${currentSettings.hideMottoBox2 ? 'checked' : ''}>Remove Motto Box
         </label>
         <label style="display:block; margin-top:10px;">
-            <input type="checkbox" id="toggle-pretitle" ${currentSettings.pretitle ? 'checked' : ''}>Remove pretitle Box
+            <input type="checkbox" id="toggle-pretitle" ${currentSettings.pretitle ? 'checked' : ''}>Remove Pretitle Box
         </label>
         <label style="display:block; margin-top:10px;">
-            <input type="checkbox" id="toggle-nation-name" ${currentSettings.hideName ? 'checked' : ''}>Remove name Box
+            <input type="checkbox" id="toggle-nation-name" ${currentSettings.hideName ? 'checked' : ''}>Remove Name Box
         </label>
         <label style="display:block; margin-top:10px;">
-            <input type="checkbox" id="toggle-big-badge" ${currentSettings.hideBigBadge ? 'checked' : ''}>Remove Big badges (WA,Admin,WAD)
+            <input type="checkbox" id="toggle-big-badge" ${currentSettings.hideBigBadge ? 'checked' : ''}>Remove Big Badges (WA, Admin, WAD)
         </label>
         <label style="display:block; margin-top:10px;">
-            <input type="checkbox" id="toggle-trophys" ${currentSettings.hideTrophy ? 'checked' : ''}>Remove Trophys
+            <input type="checkbox" id="toggle-trophys" ${currentSettings.hideTrophy ? 'checked' : ''}>Remove Trophies
         </label>
         <label style="display:block; margin-top:10px;">
-            <input type="checkbox" id="toggle-lower-info" ${currentSettings.hideLowerInfo ? 'checked' : ''}>Remove Lower info bar
+            <input type="checkbox" id="toggle-lower-info" ${currentSettings.hideLowerInfo ? 'checked' : ''}>Remove Lower Info Bar
         </label>
         <label style="display:block; margin-top:10px;">
             <input type="checkbox" id="toggle-gradient" ${currentSettings.removeGradient ? 'checked' : ''}>Remove Linear Gradient
@@ -444,7 +444,7 @@
             <input type="text" id="text-color" value="${currentSettings.textColor || ''}" placeholder="#000000" style="width:100px;">
         </label>
         <label style="display:block; margin-top:10px;">
-            Top banner size (Hex):
+            Top Banner Size (Hex):
             <input type="text" id="text-size" value="${currentSettings.textSize || ''}" placeholder=".5" style="width:100px;">
         </label>
         <label style="display:block; margin-top:10px;">
@@ -468,15 +468,15 @@
             <select id="foil-style">
                 <option value="rainbow" ${currentSettings.foilStyle === 'rainbow' ? 'selected' : ''}>Rainbow</option>
                 <option value="boom" ${currentSettings.foilStyle === 'boom' ? 'selected' : ''}>Boom</option>
-                <option value="bright_boom" ${currentSettings.foilStyle === 'bright_boom' ? 'selected' : ''}>Bright_Boom</option>
+                <option value="bright_boom" ${currentSettings.foilStyle === 'bright_boom' ? 'selected' : ''}>Bright Boom</option>
                 <option value="blob" ${currentSettings.foilStyle === 'blob' ? 'selected' : ''}>Blob</option>
                 <option value="shimmer" ${currentSettings.foilStyle === 'shimmer' ? 'selected' : ''}>Shimmer</option>
                 <option value="twinkle" ${currentSettings.foilStyle === 'twinkle' ? 'selected' : ''}>Twinkle</option>
                 <option value="spiral" ${currentSettings.foilStyle === 'spiral' ? 'selected' : ''}>Spiral</option>
-                <option value="color_spiral" ${currentSettings.foilStyle === 'color_spiral' ? 'selected' : ''}>Color spiral</option>
+                <option value="color_spiral" ${currentSettings.foilStyle === 'color_spiral' ? 'selected' : ''}>Color Spiral</option>
                 <option value="square" ${currentSettings.foilStyle === 'square' ? 'selected' : ''}>Square</option>
                 <option value="spot" ${currentSettings.foilStyle === 'spot' ? 'selected' : ''}>Spot</option>
-                <option value="spot_slow" ${currentSettings.foilStyle === 'spot_slow' ? 'selected' : ''}>Spot slow</option>
+                <option value="spot_slow" ${currentSettings.foilStyle === 'spot_slow' ? 'selected' : ''}>Spot Slow</option>
 
             </select>
         </label>
