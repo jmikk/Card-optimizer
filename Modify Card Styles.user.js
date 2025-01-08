@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Modify Card Styles
 // @namespace    http://tampermonkey.net/
-// @version      10
+// @version      10.1
 // @description  Adds customization options for card styles, including 'Full Art Mode', 'Foil Mode', and more. Applies changes only to Season 4 cards.
 // @author       9003
 // @match        *://www.nationstates.net/page=deck*
